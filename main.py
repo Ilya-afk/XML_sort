@@ -47,8 +47,9 @@ def sort_children(node, attr=None, tag=None):
         sort_children(child, attr, tag)
 
 
-def sort(unsorted_file, sorted_file, attr=None, tag=None):
+def sort(unsorted_file, attr=None, tag=None):
     """Sort unsorted xml file and save to sorted_file"""
+    sorted_file = unsorted_file[:-4] + '_output.xml'
     tree = ET.parse(unsorted_file)
     root = tree.getroot()
     sort_children(root, attr, tag)
@@ -71,10 +72,24 @@ def get_sort_rules(root):
     return tag, attribute
 
 
-if __name__ == '__main__':
-    root, tree = read_xml('settings.xml')
+def read_input_file(file):
+    with open(file, "r") as input_data:
+        settings_file = input_data.readline()[:-1]
+        input_files_list = input_data.readline().split(', ')
+
+    return settings_file, input_files_list
+
+
+def main(file):
+    settings_file, input_files_list = read_input_file(file)
+    root, tree = read_xml(settings_file)
 
     tag, attribute = get_sort_rules(root)
 
-    root_input = read_xml('input.xml')
-    sort('input.xml', 'output.xml', attribute, tag)
+    for file in input_files_list:
+        root_input, tree_input = read_xml(file)
+        sort(file, attribute, tag)
+
+
+if __name__ == '__main__':
+    main(input('Введите файл .txt: '))
