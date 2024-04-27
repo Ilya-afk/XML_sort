@@ -63,6 +63,7 @@ def sort(unsorted_file, attr=None, tag=None):
 
 
 def get_sort_rules(root):
+    tag, attribute = None, None
     for elem in root.iter():
         if elem.tag == 'array':
             tag = elem.attrib['name']
